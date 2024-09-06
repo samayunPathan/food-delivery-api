@@ -1,9 +1,9 @@
-
 from django.shortcuts import render
 from rest_framework import generics, permissions
 from .models import Restaurant, Menu, Category, MenuItem, Modifier
 from .serializers import RestaurantSerializer, MenuSerializer, CategorySerializer, MenuItemSerializer, ModifierSerializer
 from users.permissions import IsOwnerOrEmployee
+from rest_framework.exceptions import ValidationError
 
 
 class RestaurantListCreateView(generics.ListCreateAPIView):
@@ -12,6 +12,15 @@ class RestaurantListCreateView(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticated, IsOwnerOrEmployee]
 
     def perform_create(self, serializer):
+        name = self.request.data.get('name')
+        address = self.request.data.get('address')
+
+        # Check if a restaurant with the same name and address already exists
+        if Restaurant.objects.filter(name=name, address=address).exists():
+            raise ValidationError(
+                f"A restaurant with the name '{name}' and address '{address}' already exists.")
+
+        # If no duplicate exists, proceed with creation
         serializer.save(owner=self.request.user)
 
 

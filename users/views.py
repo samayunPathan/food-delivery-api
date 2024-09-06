@@ -1,35 +1,36 @@
 from django.shortcuts import render
-
-# Create your views here.
-from rest_framework import generics, permissions
+from rest_framework import generics, permissions, status
 from .models import User
 from .serializers import UserSerializer, RegisterSerializer
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
+from rest_framework.views import APIView
+from django.contrib.auth import authenticate
+from django.db import transaction
 
 
 class RegisterView(generics.CreateAPIView):
-    """
-    API endpoint for user registration.
-    """
     queryset = User.objects.all()
     serializer_class = RegisterSerializer
+    permission_classes = [permissions.AllowAny]
 
+    @transaction.atomic
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = serializer.save()
-        token, _ = Token.objects.get_or_create(user=user)
-        return Response({
-            'token': token.key,
-            'user': UserSerializer(user, context=self.get_serializer_context()).data
-        })
+        if serializer.is_valid():
+            try:
+                user = serializer.save()
+                token, created = Token.objects.get_or_create(user=user)
+                return Response({
+                    'token': token.key,
+                    'user': UserSerializer(user).data
+                }, status=status.HTTP_201_CREATED)
+            except Exception as e:
+                return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class LoginView(generics.GenericAPIView):
-    """
-    API endpoint for user login.
-    """
+class LoginView(APIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [permissions.AllowAny]
@@ -38,15 +39,13 @@ class LoginView(generics.GenericAPIView):
         username = request.data.get('username')
         password = request.data.get('password')
 
-        try:
-            user = User.objects.get(username=username)
-            if user.check_password(password):
-                token, _ = Token.objects.get_or_create(user=user)
-                return Response({
-                    'token': token.key,
-                    'user': UserSerializer(user, context=self.get_serializer_context()).data
-                })
-            else:
-                return Response({'error': 'Invalid credentials'}, status=400)
-        except User.DoesNotExist:
-            return Response({'error': 'User not found'}, status=404)
+        user = authenticate(username=username, password=password)
+
+        if user:
+            token, created = Token.objects.get_or_create(user=user)
+            return Response({
+                'token': token.key,
+                'user': UserSerializer(user).data
+            }, status=status.HTTP_200_OK)
+        else:
+            return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)

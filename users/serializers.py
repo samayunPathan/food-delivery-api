@@ -4,25 +4,22 @@ from restaurants.serializers import RestaurantSerializer
 
 
 class UserSerializer(serializers.ModelSerializer):
-    """
-    Serializer for the User model.
-    Includes the restaurant field, which is a nested serializer for the Restaurant model.
-    """
     restaurant = RestaurantSerializer(read_only=True)
 
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'is_owner', 'is_employee', 'restaurant']
+        fields = ['id', 'username', 'password', 'restaurant']
+
         read_only_fields = ['id']
 
 
 class RegisterSerializer(serializers.ModelSerializer):
-    """
-    Serializer for user registration.
-    """
+    password = serializers.CharField(write_only=True)
+
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'password', 'is_owner', 'is_employee', 'restaurant']
+        fields = ['username', 'email', 'password',
+                  'is_owner', 'is_employee', 'restaurant']
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
@@ -30,8 +27,10 @@ class RegisterSerializer(serializers.ModelSerializer):
             username=validated_data['username'],
             email=validated_data['email'],
             password=validated_data['password'],
-            is_owner=validated_data['is_owner'],
-            is_employee=validated_data['is_employee'],
-            restaurant=validated_data['restaurant']
+            is_owner=validated_data.get('is_owner', False),
+            is_employee=validated_data.get('is_employee', False),
         )
+        if 'restaurant' in validated_data:
+            user.restaurant = validated_data['restaurant']
+            user.save()
         return user
