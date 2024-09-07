@@ -62,6 +62,7 @@ class Modifier(models.Model):
     Model for a menu item modifier, including its name and the associated menu item.
     """
     name = models.CharField(max_length=100)
+    price = models.DecimalField(max_digits=6, decimal_places=2, default=0.00)
     menu_item = models.ForeignKey(
         MenuItem, on_delete=models.CASCADE, related_name='modifiers')
 

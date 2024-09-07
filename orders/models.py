@@ -10,10 +10,13 @@ class Order(models.Model):
     """
     Model for an order, including the customer, restaurant, order items, and payment method.
     """
-    customer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='orders')
-    restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE, related_name='orders')
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='orders')
+    restaurant = models.ForeignKey(
+        Restaurant, on_delete=models.CASCADE, related_name='orders')
     items = models.ManyToManyField(MenuItem, through='OrderItem')
-    payment_method = models.CharField(max_length=50, choices=[('card', 'Card'), ('cash', 'Cash')])
+    payment_method = models.CharField(
+        max_length=50, choices=[('card', 'Card'), ('cash', 'Cash')])
     total_amount = models.DecimalField(max_digits=8, decimal_places=2)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -26,7 +29,8 @@ class OrderItem(models.Model):
     """
     Model for an item in an order, including the order, menu item, and quantity.
     """
-    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='order_items')
+    order = models.ForeignKey(
+        Order, on_delete=models.CASCADE, related_name='order_items')
     menu_item = models.ForeignKey(MenuItem, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField()
 
