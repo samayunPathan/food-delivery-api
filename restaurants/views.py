@@ -30,11 +30,22 @@ class MenuListCreateView(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticated, IsOwnerOrEmployee]
 
     def perform_create(self, serializer):
-        restaurant = Restaurant.objects.get(pk=self.request.data['restaurant'])
-        if self.request.user.is_owner or self.request.user.is_employee and self.request.user.restaurant == restaurant:
-            serializer.save()
+        restaurant_id = self.request.data.get('restaurant')
+        if not restaurant_id:
+            raise ValidationError(
+                "Restaurant ID is required to create a menu.")
+
+        try:
+            restaurant = Restaurant.objects.get(pk=restaurant_id)
+        except Restaurant.DoesNotExist:
+            raise ValidationError(
+                f"Restaurant with id {restaurant_id} does not exist.")
+
+        if self.request.user.is_owner or (self.request.user.is_employee and self.request.user.restaurant == restaurant):
+            serializer.save(restaurant=restaurant)
         else:
-            raise permissions.PermissionDenied
+            raise permissions.PermissionDenied(
+                "You don't have permission to create a menu for this restaurant.")
 
 
 class CategoryListCreateView(generics.ListCreateAPIView):

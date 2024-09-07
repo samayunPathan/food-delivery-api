@@ -4,7 +4,7 @@ from django.conf import settings
 
 class Restaurant(models.Model):
     """
-    Model for a restaurant, including its name, address, and owner.
+    Model for a restaurant
     """
     name = models.CharField(max_length=100)
     address = models.CharField(max_length=200)
@@ -20,9 +20,7 @@ class Restaurant(models.Model):
 
 
 class Menu(models.Model):
-    """
-    Model for a restaurant's menu, including its name and the associated restaurant.
-    """
+
     name = models.CharField(max_length=100)
     restaurant = models.ForeignKey(
         Restaurant, on_delete=models.CASCADE, related_name='menus')
@@ -32,9 +30,7 @@ class Menu(models.Model):
 
 
 class Category(models.Model):
-    """
-    Model for a menu category, including its name and the associated menu.
-    """
+
     name = models.CharField(max_length=100)
     menu = models.ForeignKey(
         Menu, on_delete=models.CASCADE, related_name='categories')
@@ -44,9 +40,7 @@ class Category(models.Model):
 
 
 class MenuItem(models.Model):
-    """
-    Model for a menu item, including its name, description, price, and the associated category.
-    """
+
     name = models.CharField(max_length=100)
     description = models.TextField()
     price = models.DecimalField(max_digits=6, decimal_places=2)
@@ -59,7 +53,7 @@ class MenuItem(models.Model):
 
 class Modifier(models.Model):
     """
-    Model for a menu item modifier, including its name and the associated menu item.
+    A menu item modifier, including its name and its associated menu item.
     """
     name = models.CharField(max_length=100)
     price = models.DecimalField(max_digits=6, decimal_places=2, default=0.00)
