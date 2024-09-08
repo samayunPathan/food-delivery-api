@@ -68,7 +68,7 @@ This is a **Food Delivery API** built with Django Rest Framework. It provides fu
 ### Step 1: Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/food-delivery-api.git
+git clone https://github.com/samayunPathan/food-delivery-api.git
 ```
 ```bash
 cd food-delivery-api
