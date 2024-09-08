@@ -127,7 +127,7 @@ http://127.0.0.1:8000/swagger/
 ### User Registration and Authentication
 
 #### Register a new user
-Users can only register under an existing restaurant.
+**Users can only register under an existing restaurant.Super user first add restaurant and that restaurant id user will get from superuser then user can register as owner or employee under that restaurant.**
 - **POST** `/user/register/`- Registers a new user.
 
 
