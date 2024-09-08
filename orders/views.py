@@ -7,10 +7,7 @@ from django.db import transaction
 
 
 class OrderListCreateView(generics.ListCreateAPIView):
-    """
-    API endpoint for listing and creating orders.
-    Customers can create new orders, while owners and employees can view all orders.
-    """
+
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
 
@@ -39,10 +36,7 @@ class OrderListCreateView(generics.ListCreateAPIView):
 
 
 class OrderDetailView(generics.RetrieveUpdateDestroyAPIView):
-    """
-    API endpoint for retrieving, updating, and deleting a specific order.
-    Customers can only access their own orders, while owners and employees can access all orders.
-    """
+
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
     permission_classes = [permissions.IsAuthenticated, IsOwnerOrEmployee]

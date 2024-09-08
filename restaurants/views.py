@@ -15,12 +15,12 @@ class RestaurantListCreateView(generics.ListCreateAPIView):
         name = self.request.data.get('name')
         address = self.request.data.get('address')
 
-        # Check if a restaurant with the same name and address already exists
+        # Check a restaurant with the same name and address already exists
         if Restaurant.objects.filter(name=name, address=address).exists():
             raise ValidationError(
                 f"A restaurant with the name '{name}' and address '{address}' already exists.")
 
-        # If no duplicate exists, proceed with creation
+        # If no duplicate proceed creation
         serializer.save(owner=self.request.user)
 
 

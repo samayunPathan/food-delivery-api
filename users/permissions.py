@@ -4,8 +4,9 @@ from .models import User
 
 class IsOwnerOrEmployee(permissions.BasePermission):
     """
-    Custom permission to allow only owners and employees to access certain views.
+    Custom permission to allow only owners and employees to access views.
     """
+
     def has_permission(self, request, view):
         if request.user.is_authenticated:
             return request.user.is_owner or request.user.is_employee

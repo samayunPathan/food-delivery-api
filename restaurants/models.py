@@ -9,7 +9,7 @@ class Restaurant(models.Model):
     name = models.CharField(max_length=100)
     address = models.CharField(max_length=200)
     owner = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='owned_restaurants')
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='owned_restaurants', null=True, blank=True)
 
     class Meta:
         # Add a unique constraint on name and address
@@ -53,7 +53,7 @@ class MenuItem(models.Model):
 
 class Modifier(models.Model):
     """
-    A menu item modifier, including its name and its associated menu item.
+    Menu item modifier, including its name and its associated menu item.
     """
     name = models.CharField(max_length=100)
     price = models.DecimalField(max_digits=6, decimal_places=2, default=0.00)
