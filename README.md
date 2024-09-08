@@ -18,6 +18,8 @@
    - [Step 5: Apply Migrations](#step-5-apply-migrations)
    - [Step 6: Create a Superuser](#step-6-create-a-superuser)
    - [Step 7: Run the Development Server](#step-7-run-the-development-server)
+   - [Step 8: Add a Restaurant](#step-8-add-a-restaurant)
+   - [Step 9: Swagger API Documentation](#step-9-swagger-api-documentation)
 6. [API Endpoints](#api-endpoints)
    - [User Registration and Authentication](#user-registration-and-authentication)
    - [Restaurant Management](#restaurant-management)
@@ -111,11 +113,21 @@ python manage.py createsuperuser
 python manage.py runserver
 ```
 The API should now be available at http://127.0.0.1:8000/.
+### Step 8: Add a Restaurant
+After creating the superuser, you must first create a restaurant in the database.
+Only after adding a restaurant can users register under it.
+
+Log in to the Django Admin panel (http://127.0.0.1:8000/admin/) using your superuser account.
+Navigate to the Restaurants section and add your first restaurant.
+### Step 9: Swagger API Documentation
+Visit the following URL to access the Swagger OpenAPI documentation for exploring available endpoints:
+http://127.0.0.1:8000/swagger/
 ## API Endpoints 
 
 ### User Registration and Authentication
 
 #### Register a new user
+Users can only register under an existing restaurant.
 - **POST** `/user/register/`- Registers a new user.
 
 
