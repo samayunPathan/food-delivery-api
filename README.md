@@ -92,6 +92,10 @@ pip install -r requirements.txt
 This GitHub repo includes a `.env.sample` file for better maintainability.
   
 ```bash
+# Secret Key
+SECRET_KEY=your-secret-key-here
+
+# Database configuration
 host=localhost
 port=port
 dbname=db_name
